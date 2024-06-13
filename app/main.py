@@ -81,12 +81,13 @@ def handle_client(conn, addr):
     elif match_file: # files response
 
         filename = match_file.group(1)
-        if os.path.exists(os.path.join('/tmp/data/codecrafters.io/http-server-tester/',filename)):
-            with open(filename, 'r') as file:
+        file_path = os.path.join('/tmp/data/codecrafters.io/http-server-tester/',filename)
+        if os.path.exists(file_path):
+            with open(file_path, 'r') as file:
                 file_content = file.read()
             response = (
                 f"HTTP/1.1 200 OK\r\n"
-                f"Content-Type: text/plain\r\n"
+                f"Content-Type: application/octet-stream\r\n"
                 f"Content-Length: {len(file_content)}\r\n"
                 f"\r\n"
                 f"{file_content}"
