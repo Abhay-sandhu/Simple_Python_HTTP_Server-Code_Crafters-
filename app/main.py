@@ -72,7 +72,7 @@ def handle_client(conn, addr, directory):
 
     elif match_echo: # echo response
 
-        encoding_pattern = re.compile(r"[Aa]ccept-[Ee]ncoding: (\S+)")
+        encoding_pattern = re.compile(r"[Aa]ccept-[Ee]ncoding: ([\S\s]+)\r\n")
         match_encoding = encoding_pattern.search(data.decode('utf-8'))
         
         if match_encoding is not None and re.search(r"[Gg]zip", match_encoding.group(1)):
