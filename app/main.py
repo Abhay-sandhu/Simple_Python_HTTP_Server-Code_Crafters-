@@ -2,7 +2,7 @@
 import socket
 import re
 import threading
-
+import os
 
 def main():
     # You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -50,11 +50,18 @@ def handle_client(conn, addr):
         user_agent_pattern = re.compile(r"User-Agent: (\S+)")
         match_u_agent = user_agent_pattern.search(data.decode('utf-8'))
 
+    # files pattern and match
+    files_pattern = re.compile(r"GET /files/(\S+) HTTP/1\.1")
+    match_file = files_pattern.search(request)
+
+
     # response
     if request == 'GET / HTTP/1.1': # root response
+
         response = "HTTP/1.1 200 OK\r\n\r\n"
     
     elif match_echo: # echo response
+
         response = (f"HTTP/1.1 200 OK\r\n"
                     f"Content-Type: text/plain\r\n"
                     f"Content-Length: {len(match_echo.group(1))}\r\n"
@@ -63,6 +70,7 @@ def handle_client(conn, addr):
                     )
     
     elif match_user_agent: # user agent response
+
         response = (f"HTTP/1.1 200 OK\r\n"
                     f"Content-Type: text/plain\r\n"
                     f"Content-Length: {len(match_u_agent.group(1))}\r\n"
@@ -70,7 +78,24 @@ def handle_client(conn, addr):
                     f"{match_u_agent.group(1)}"
                     )
 
+    elif match_file: # files response
+
+        filename = match_file.group(1)
+        if os.path.exists(os.path.join('tmp',filename)):
+            with open(filename, 'r') as file:
+                file_content = file.read()
+            response = (
+                f"HTTP/1.1 200 OK\r\n"
+                f"Content-Type: text/plain\r\n"
+                f"Content-Length: {len(file_content)}\r\n"
+                f"\r\n"
+                f"{file_content}"
+            )
+        else:
+            response = "HTTP/1.1 404 Not Found\r\n\r\n"
+
     else: # 'not found' response
+
         response = "HTTP/1.1 404 Not Found\r\n\r\n"
     
     # send response
