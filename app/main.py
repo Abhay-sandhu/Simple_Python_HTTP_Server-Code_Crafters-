@@ -76,7 +76,7 @@ def handle_client(conn, addr, directory):
         match_encoding = encoding_pattern.search(data.decode('utf-8'))
         
         if match_encoding is not None:
-            match_gzip = re.search(r"[Gg]zip", match_encoding.group(1))
+            match_gzip = re.search(r"([Gg]zip)", match_encoding.group(1))
         
         if match_encoding is not None and match_gzip:
             response = (f"HTTP/1.1 200 OK\r\n"
