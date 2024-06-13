@@ -74,7 +74,8 @@ def handle_client(conn, addr, directory):
 
         encoding_pattern = re.compile(r"[Aa]ccept-[Ee]ncoding: (\S+)")
         match_encoding = encoding_pattern.search(data.decode('utf-8'))
-        if match_encoding is not None and match_encoding.group(1) in ["gzip"]:
+        
+        if match_encoding is not None and re.search(r"[Gg]zip", match_encoding.group(1)):
             response = (f"HTTP/1.1 200 OK\r\n"
                         f"Content-Encoding: {match_encoding.group(1)}\r\n"
                         f"Content-Type: text/plain\r\n"
@@ -95,6 +96,7 @@ def handle_client(conn, addr, directory):
 
         user_agent_pattern = re.compile(r"[Uu]ser-[Aa]gent: (\S+)")
         match_u_agent = user_agent_pattern.search(data.decode('utf-8'))
+        
         response = (f"HTTP/1.1 200 OK\r\n"
                     f"Content-Type: text/plain\r\n"
                     f"Content-Length: {len(match_u_agent.group(1))}\r\n"
@@ -107,9 +109,11 @@ def handle_client(conn, addr, directory):
 
         filename = match_file.group(1)
         file_path = os.path.join(directory,filename)
+        
         if os.path.exists(file_path):
             with open(file_path, 'r') as file:
                 file_content = file.read()
+            
             response = (
                 f"HTTP/1.1 200 OK\r\n"
                 f"Content-Type: application/octet-stream\r\n"
@@ -125,10 +129,11 @@ def handle_client(conn, addr, directory):
 
         filename = match_post_file.group(1)
         file_path = os.path.join(directory,filename)
-
         file_content = data.decode('utf-8').splitlines()[-1]
+        
         with open(file_path, 'w') as file:
             file.write(file_content)
+        
         response = "HTTP/1.1 201 Created\r\n\r\n"
 
         
