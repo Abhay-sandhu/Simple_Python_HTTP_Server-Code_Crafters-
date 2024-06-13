@@ -4,6 +4,7 @@ import re
 import threading
 import os
 import argparse
+import gzip
 
 def main():
     # You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -79,12 +80,15 @@ def handle_client(conn, addr, directory):
             match_gzip = re.search(r"([Gg]zip)", match_encoding.group(1))
         
         if match_encoding is not None and match_gzip:
+
+            gzipped_data = gzip.compress(bytes(match_echo.group(1), 'utf-8'))
+
             response = (f"HTTP/1.1 200 OK\r\n"
                         f"Content-Encoding: {match_gzip.group(1)}\r\n"
                         f"Content-Type: text/plain\r\n"
-                        f"Content-Length: {len(match_echo.group(1))}\r\n"
+                        f"Content-Length: {len(gzipped_data)}\r\n"
                         f"\r\n"
-                        f"{match_echo.group(1)}"
+                        f"{gzipped_data}"
                         )
         else:
             response = (f"HTTP/1.1 200 OK\r\n"
