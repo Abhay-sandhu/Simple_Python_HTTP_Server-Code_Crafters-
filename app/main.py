@@ -22,17 +22,12 @@ def main():
 
     pattern = re.compile(r"GET /echo/(\S+) HTTP/1\.1")
     match = pattern.search(request)
-    
+
     if request == 'GET / HTTP/1.1':
         response = "HTTP/1.1 200 OK\r\n\r\n"
-    
+   
     elif match:
-        response = (f"HTTP/1.1 200 OK\r\n
-                    Content-Type: text/plain\r\n
-                    Content-Length: {len(match.group(1))}\r\n
-                    \r\n
-                    {match.group(1)}
-                    ")
+        response = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(match.group(1))}\r\n\r\n{match.group(1)}"
 
     else:
         response = "HTTP/1.1 404 Not Found\r\n\r\n"
