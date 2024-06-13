@@ -75,9 +75,12 @@ def handle_client(conn, addr, directory):
         encoding_pattern = re.compile(r"[Aa]ccept-[Ee]ncoding: ([\S\s]+)\r\n")
         match_encoding = encoding_pattern.search(data.decode('utf-8'))
         
-        if match_encoding is not None and re.search(r"[Gg]zip", match_encoding.group(1)):
+        if match_encoding is not None:
+            match_gzip = re.search(r"[Gg]zip", match_encoding.group(1))
+        
+        if match_encoding is not None and match_gzip:
             response = (f"HTTP/1.1 200 OK\r\n"
-                        f"Content-Encoding: {match_encoding.group(1)}\r\n"
+                        f"Content-Encoding: {match_gzip.group(1)}\r\n"
                         f"Content-Type: text/plain\r\n"
                         f"Content-Length: {len(match_echo.group(1))}\r\n"
                         f"\r\n"
