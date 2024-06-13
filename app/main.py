@@ -79,8 +79,8 @@ def handle_client(conn, addr, directory):
                         f"Content-Encoding: {match_encoding.group(1)}\r\n"
                         f"Content-Type: text/plain\r\n"
                         f"Content-Length: {len(match_echo.group(1))}\r\n"
-                        f"{match_echo.group(1)}"
                         f"\r\n"
+                        f"{match_echo.group(1)}"
                         )
         else:
             response = (f"HTTP/1.1 200 OK\r\n"
