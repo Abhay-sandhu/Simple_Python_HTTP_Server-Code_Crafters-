@@ -81,7 +81,7 @@ def handle_client(conn, addr, directory):
         
         if match_encoding is not None and match_gzip:
 
-            gzipped_data = gzip.compress(bytes(match_echo.group(1), 'utf-8'))
+            gzipped_data = gzip.compress(match_echo.group(1))
 
             response = (f"HTTP/1.1 200 OK\r\n"
                         f"Content-Encoding: {match_gzip.group(1)}\r\n"
