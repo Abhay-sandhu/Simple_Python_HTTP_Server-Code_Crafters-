@@ -72,7 +72,18 @@ def handle_client(conn, addr, directory):
 
     elif match_echo: # echo response
 
-        response = (f"HTTP/1.1 200 OK\r\n"
+        encoding_pattern = re.compile(r"[Aa]ccept-[Ee]ncoding: (\S+)")
+        match_encoding = encoding_pattern.search(data.decode('utf-8'))
+        if match_encoding.group(1) in ["gzip"]:
+            response = (f"HTTP/1.1 200 OK\r\n"
+                        f"Content-Encoding: {match_encoding.group(1)}\r\n"
+                        f"Content-Type: text/plain\r\n"
+                        f"Content-Length: {len(match_echo.group(1))}\r\n"
+                        f"{match_echo.group(1)}"
+                        f"\r\n"
+                        )
+        else:
+            response = (f"HTTP/1.1 200 OK\r\n"
                     f"Content-Type: text/plain\r\n"
                     f"Content-Length: {len(match_echo.group(1))}\r\n"
                     f"\r\n"
@@ -82,7 +93,7 @@ def handle_client(conn, addr, directory):
 
     elif match_user_agent: # user agent response
 
-        user_agent_pattern = re.compile(r"User-Agent: (\S+)")
+        user_agent_pattern = re.compile(r"[Uu]ser-[Aa]gent: (\S+)")
         match_u_agent = user_agent_pattern.search(data.decode('utf-8'))
         response = (f"HTTP/1.1 200 OK\r\n"
                     f"Content-Type: text/plain\r\n"
