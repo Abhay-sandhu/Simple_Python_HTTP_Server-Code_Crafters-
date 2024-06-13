@@ -24,7 +24,8 @@ def main():
     match_echo = echo_pattern.search(request)
 
     u_agent_pattern = re.compile(r"GET /user-agent HTTP/1\.1")
-    if u_agent_pattern.search(request):
+    match_user_agent = u_agent_pattern.search(request)
+    if match_user_agent:
         user_agent_pattern = re.compile(r"User-Agent: (\S+)")
         match_u_agent = user_agent_pattern.search(data.decode('utf-8'))
 
@@ -39,7 +40,7 @@ def main():
                     f"{match_echo.group(1)}"
                     )
     
-    elif match_u_agent:
+    elif match_user_agent:
         response = (f"HTTP/1.1 200 OK\r\n"
                     f"Content-Type: text/plain\r\n"
                     f"Content-Length: {len(match_u_agent.group(1))}\r\n"
