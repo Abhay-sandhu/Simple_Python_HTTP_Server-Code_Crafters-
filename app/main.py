@@ -10,10 +10,11 @@ def main():
     print("Logs from your program will appear here!")
     
     # Parse command-line arguments
-    parser = argparse.ArgumentParser(description="Simple HTTP Server")
-    parser.add_argument("--directory", type=str, required=True, help="Directory to operate files from")
-    args = parser.parse_args()
-    directory = args.directory
+    if argparse.args == 2:
+        parser = argparse.ArgumentParser(description="Simple HTTP Server")
+        parser.add_argument("--directory", type=str, required=True, help="Directory to operate files from")
+        args = parser.parse_args()
+        directory = args.directory
 
     # Uncomment this to pass the first stage
     server_socket = socket.create_server(("localhost", 4221), reuse_port=True)
