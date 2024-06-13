@@ -42,7 +42,7 @@ def main():
     elif match_u_agent:
         response = (f"HTTP/1.1 200 OK\r\n"
                     f"Content-Type: text/plain\r\n"
-                    f"Content-Length: {len(match_u_agent.group(1))}"
+                    f"Content-Length: {len(match_u_agent.group(1))}\r\n"
                     f"\r\n"
                     f"{match_u_agent.group(1)}"
                     )
