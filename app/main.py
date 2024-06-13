@@ -83,13 +83,13 @@ def handle_client(conn, addr, directory):
         if match_encoding is not None and match_gzip:
 
             gzipped_data = gzip.compress(bytes(match_echo.group(1), 'utf-8'))
-            hex_encoded_content = binascii.hexlify(gzipped_data).decode('utf-8')
+            #hex_encoded_content = binascii.hexlify(gzipped_data).decode('utf-8')
             response = (f"HTTP/1.1 200 OK\r\n"
                         f"Content-Encoding: {match_gzip.group(1)}\r\n"
                         f"Content-Type: text/plain\r\n"
-                        f"Content-Length: {len(hex_encoded_content)}\r\n"
+                        f"Content-Length: {len(gzipped_data)}\r\n"
                         f"\r\n"
-                        f"{hex_encoded_content}"
+                        f"{gzipped_data}"
                         )
         else:
             response = (f"HTTP/1.1 200 OK\r\n"
