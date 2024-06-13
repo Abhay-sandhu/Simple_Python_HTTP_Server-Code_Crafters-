@@ -81,7 +81,7 @@ def handle_client(conn, addr):
     elif match_file: # files response
 
         filename = match_file.group(1)
-        if os.path.exists(os.path.join('tmp',filename)):
+        if os.path.exists(os.path.join('/tmp/data/codecrafters.io/http-server-tester/',filename)):
             with open(filename, 'r') as file:
                 file_content = file.read()
             response = (
