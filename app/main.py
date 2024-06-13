@@ -11,6 +11,7 @@ def main():
     server_socket = socket.create_server(("localhost", 4221), reuse_port=True)
     conn, addr = server_socket.accept() # wait for client
     data = conn.recv(1024)
+    print(data.decode('utf-8'))
     response = (
             "HTTP/1.1 200 OK\r\n\r\n"
         )
