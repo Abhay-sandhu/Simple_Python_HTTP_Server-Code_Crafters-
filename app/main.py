@@ -153,21 +153,17 @@ def handle_client(conn, addr, directory):
     
     # GET '/echo/' response
     elif method == 'GET' and path.startswith('/echo/'):
-        echo_body = path[6:]
-        accept_encoding = req_content_header.get('accept-encoding', '')
-        if 'gzip' in accept_encoding:
-            buf = io.BytesIO()
-            with gzip.GzipFile(fileobj=buf, mode='wb') as f:
-                f.write(echo_body.encode('utf-8'))
-            echo_body = buf.getvalue().decode('latin1')
-            response = create_response(version, 200, 'OK', 
-                                       content_header={'Content-Type': 'text/plain', 'Content-Encoding': 'gzip'},
-                                       content_body=echo_body)
+        content_encoding = req_content_header.get('accept-encoding', '')
+        echo_content_header = {'Content-Type': 'text/plain'}
+        echo_text = path[6:]
+        if 'gzip' in content_encoding:
+            echo_text = gzip.compress(echo_text.encode('utf-8'))
+            echo_content_header['Content-Encoding'] = 'gzip'
         else:
-            response = create_response(version, 200, 'OK', 
-                                   content_header={'Content-Type': 'text/plain'},
-                                   content_body=echo_body
-                                   )
+            echo_text = echo_text.encode('utf-8')
+        
+        response = create_response(version, 200, 'OK', content_header=echo_content_header, content_body=echo_text)
+
     
     # GET '/user-agent' response
     elif method == 'GET' and path.startswith('/user-agent'):
@@ -211,7 +207,7 @@ def handle_client(conn, addr, directory):
 
 
     # send response
-    conn.sendall(response.encode('utf-8'))
+    conn.sendall(response)
     print('response sent')
 
     # close connection
