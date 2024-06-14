@@ -105,7 +105,7 @@ def create_response(version, code, code_message, content_header={}, content_body
             headers += f"{key}: {value}\r\n"
     
     if content_body is not None:
-        headers += f"Content-Length: {len(content_body.encode('utf-8'))}\r\n"
+        headers += f"Content-Length: {len(content_body)}\r\n"
 
     headers += "\r\n"
     
