@@ -157,10 +157,15 @@ def handle_client(conn, addr, directory):
         echo_content_header = {'Content-Type': 'text/plain'}
         echo_text = path[6:]
         if 'gzip' in content_encoding:
-            echo_text = gzip.compress(echo_text.encode('utf-8'))
+            # Create a buffer to hold the compressed data
+            compressed_buffer = io.BytesIO()
+            with gzip.GzipFile(compressed_buffer, mode='wb') as gzip_file:
+                gzip_file.write(echo_text.encode('utf-8'))  # Ensure UTF-8 encoding
+            compressed_data = compressed_buffer.getvalue()
             echo_content_header['Content-Encoding'] = 'gzip'
-        response = create_response(version, 200, 'OK', content_header=echo_content_header, content_body=echo_text)
-
+            response = create_response(version, 200, 'OK', content_header=echo_content_header, content_body=compressed_data)
+        else:
+            response = create_response(version, 200, 'OK', content_header=echo_content_header, content_body=echo_text)
     
     # GET '/user-agent' response
     elif method == 'GET' and path.startswith('/user-agent'):
