@@ -157,7 +157,7 @@ def handle_client(conn, addr, directory):
         echo_content_header = {'Content-Type': 'text/plain'}
         echo_text = path[6:]
         if 'gzip' in content_encoding:
-            echo_text = gzip.compress(echo_text.encode('utf-8'))
+            echo_text = gzip.compress(echo_text.encode('utf-8')).decode('utf-8')
             echo_content_header['Content-Encoding'] = 'gzip'
         response = create_response(version, 200, 'OK', content_header=echo_content_header, content_body=echo_text)
 
