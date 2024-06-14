@@ -110,7 +110,7 @@ def create_response(version, code, code_message, content_header={}, content_body
     headers += "\r\n"
     
     if content_body is not None:
-        response = headers + content_body.decode('utf-8')
+        response = headers + content_body
     else:
         response = headers
     
@@ -179,7 +179,7 @@ def handle_client(conn, addr, directory):
                 file_content = file.read()
             response = create_response(version, 200, 'OK',
                                        content_header={'Content-Type': 'application/octet-stream'},
-                                       content_body=file_content.decode('latin-1')
+                                       content_body=file_content.decode('utf-8')
                                        )
         else:
             # requested File does not Exist
