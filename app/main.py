@@ -110,9 +110,9 @@ def create_response(version, code, code_message, content_header={}, content_body
     headers += "\r\n"
     
     if content_body is not None:
-        response = headers + content_body
+        response = headers.encode('utf-8') + content_body.encode('utf-8')
     else:
-        response = headers
+        response = headers.encode('utf-8')
     
     return response
 
