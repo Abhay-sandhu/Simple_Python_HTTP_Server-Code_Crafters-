@@ -110,9 +110,9 @@ def create_response(version, code, code_message, content_header={}, content_body
     headers += "\r\n"
     
     if content_body is not None:
-        response = headers.encode('utf-8') + content_body.encode('utf-8')
+        response = headers + content_body.decode('utf-8')
     else:
-        response = headers.encode('utf-8')
+        response = headers
     
     return response
 
@@ -204,7 +204,7 @@ def handle_client(conn, addr, directory):
 
 
     # send response
-    conn.sendall(response)
+    conn.sendall(response.encode('utf-8'))
     print('response sent')
 
     # close connection
