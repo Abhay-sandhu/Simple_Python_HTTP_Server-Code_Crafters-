@@ -1,11 +1,10 @@
 # Uncomment this to pass the first stage
 import socket
-import re
 import threading
 import os
 import argparse
 import gzip
-import binascii
+import io
 
 def main():
     """
@@ -154,9 +153,20 @@ def handle_client(conn, addr, directory):
     
     # GET '/echo/' response
     elif method == 'GET' and path.startswith('/echo/'):
-        response = create_response(version, 200, 'OK', 
+        echo_body = path[6:]
+        accept_encoding = req_content_header.get('accept-encoding', '')
+        if 'gzip' in accept_encoding:
+            buf = io.BytesIO()
+            with gzip.GzipFile(fileobj=buf, mode='wb') as f:
+                f.write(echo_body.encode('utf-8'))
+            echo_body = buf.getvalue().decode('latin1')
+            response = create_response(version, 200, 'OK', 
+                                       content_header={'Content-Type': 'text/plain', 'Content-Encoding': 'gzip'},
+                                       content_body=echo_body)
+        else:
+            response = create_response(version, 200, 'OK', 
                                    content_header={'Content-Type': 'text/plain'},
-                                   content_body=path[6:]
+                                   content_body=echo_body
                                    )
     
     # GET '/user-agent' response
